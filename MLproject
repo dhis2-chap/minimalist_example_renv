@@ -1,0 +1,17 @@
+name: minimalist_example_renv
+
+renv_env: renv.lock
+
+entry_points:
+  train:
+    parameters:
+      train_data: str
+      model: str
+    command: "Rscript main.R train {train_data} {model}"
+  predict:
+    parameters:
+      historic_data: str
+      future_data: str
+      model: str
+      out_file: str
+    command: "Rscript main.R predict {model} {historic_data} {future_data} {out_file}"
