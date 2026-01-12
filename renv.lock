@@ -1,6 +1,5 @@
 {
   "R": {
-    "Version": "4.0.0",
     "Repositories": [
       {
         "Name": "CRAN",
