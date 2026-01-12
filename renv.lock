@@ -7,5 +7,18 @@
       }
     ]
   },
-  "Packages": {}
+  "Packages": {
+    "optparse": {
+      "Package": "optparse",
+      "Version": "1.7.5",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
+    "getopt": {
+      "Package": "getopt",
+      "Version": "1.20.4",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    }
+  }
 }

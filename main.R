@@ -1,8 +1,8 @@
-# CHAP model: minimalist_example_renv
+# CHAP model: temp_r_model
 #
 # A simple linear regression model for disease prediction.
 
-args <- commandArgs(trailingOnly = TRUE)
+library(optparse)
 
 train <- function(train_data_path, model_path) {
   df <- read.csv(train_data_path)
@@ -34,22 +34,50 @@ predict_model <- function(model_path, historic_data_path, future_data_path, out_
   message(paste("Predictions saved to", out_path))
 }
 
+# Parse command line arguments
+args <- commandArgs(trailingOnly = TRUE)
+
 if (length(args) < 1) {
-  stop("Usage: Rscript main.R <command> [args...]")
+  stop("Usage: Rscript main.R <train|predict> [options]")
 }
 
 command <- args[1]
+command_args <- args[-1]
 
 if (command == "train") {
-  if (length(args) != 3) {
-    stop("train requires: train_data model")
+  option_list <- list(
+    make_option(c("-t", "--train_data"), type = "character", help = "Path to training data CSV"),
+    make_option(c("-m", "--model"), type = "character", help = "Path to save trained model")
+  )
+  parser <- OptionParser(option_list = option_list, usage = "usage: %prog train [options]")
+  opts <- parse_args(parser, args = command_args, positional_arguments = TRUE)
+
+  if (is.null(opts$options$train_data) || is.null(opts$options$model)) {
+    print_help(parser)
+    stop("train requires --train_data and --model")
   }
-  train(args[2], args[3])
+
+  train(opts$options$train_data, opts$options$model)
+
 } else if (command == "predict") {
-  if (length(args) != 5) {
-    stop("predict requires: model historic_data future_data out_file")
+  option_list <- list(
+    make_option(c("-m", "--model"), type = "character", help = "Path to trained model"),
+    make_option(c("-d", "--historic_data"), type = "character", help = "Path to historic data CSV"),
+    make_option(c("-f", "--future_data"), type = "character", help = "Path to future climate data CSV"),
+    make_option(c("-o", "--out_file"), type = "character", help = "Path to save predictions")
+  )
+  parser <- OptionParser(option_list = option_list, usage = "usage: %prog predict [options]")
+  opts <- parse_args(parser, args = command_args, positional_arguments = TRUE)
+
+  if (is.null(opts$options$model) || is.null(opts$options$historic_data) ||
+      is.null(opts$options$future_data) || is.null(opts$options$out_file)) {
+    print_help(parser)
+    stop("predict requires --model, --historic_data, --future_data, and --out_file")
   }
-  predict_model(args[2], args[3], args[4], args[5])
+
+  predict_model(opts$options$model, opts$options$historic_data,
+                opts$options$future_data, opts$options$out_file)
+
 } else {
-  stop(paste("Unknown command:", command))
+  stop(paste("Unknown command:", command, "\nUsage: Rscript main.R <train|predict> [options]"))
 }
