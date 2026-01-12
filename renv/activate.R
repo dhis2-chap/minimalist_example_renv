@@ -1,3 +1,4 @@
+library(utils)
 # renv activation script
 local({
   if (!requireNamespace("renv", quietly = TRUE)) {
