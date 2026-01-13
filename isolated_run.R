@@ -3,6 +3,9 @@
 # This script demonstrates how to train and predict using the model directly,
 # which is useful for development and debugging before integrating with CHAP.
 
+# Restore renv packages if needed
+renv::restore(prompt = FALSE)
+
 # Train the model
 system2("Rscript", c("main.R", "train",
                      "--train_data", "input/trainData.csv",
